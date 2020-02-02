@@ -14,6 +14,7 @@ connectDB();
 
 // Route Files
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 
 // Logger File
 const logger = require('./middleware/logger');
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 app.use(errorHandler);
 
