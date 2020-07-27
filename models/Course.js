@@ -35,7 +35,12 @@ const CourseSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Bootcamp',
         required: true
-    }
+    },
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
 });
 
 // Static method to get average of course tuition
