@@ -28,8 +28,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.id);
 
+        if(!user) {
+            return next(new ErrorResponse(`User Not Exist With Given Creds`, 404))
+        }
+        
+        req.user = user;
         next();
     } catch (err) {
         return next(new ErrorResponse('Not Authorized to access this route', 401));
