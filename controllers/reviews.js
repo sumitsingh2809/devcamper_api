@@ -54,7 +54,7 @@ exports.addReview = asyncHandler(async (req, res, next) => {
     req.body.bootcamp = req.params.bootcampId;
     req.body.user = req.user.id;
 
-    const bootcamp = Bootcamp.findById(req.params.bootcampId);
+    const bootcamp = await Bootcamp.findById(req.params.bootcampId);
 
     if(!bootcamp) {
         return next(new ErrorResponse(`No bootcamp with id of ${req.params.bootcampId}`, 404));
@@ -65,5 +65,64 @@ exports.addReview = asyncHandler(async (req, res, next) => {
     return res.status(201).json({
         success: true,
         data: review
+    });
+});
+
+/**
+ * @description  Update Review
+ * @route        PUT /api/v1/reviews/:id
+ * @access       Private
+ */
+exports.updateReview = asyncHandler(async (req, res, next) => {
+    let review = await Review.findById(req.params.id);
+
+    if(!review) {
+        return next(new ErrorResponse(`No review with id of ${req.params.id}`, 404));
+    }
+
+    // make sure review belongs to user or user is admin
+    if(
+        review.user.toString() !== req.user.id &&
+        user.role !== 'admin'
+    ) {
+        return next(new ErrorResponse(`Not Authorized to update review`, 401));
+    }
+
+    review = await Review.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true
+    })
+
+    return res.status(200).json({
+        success: true,
+        data: review
+    });
+});
+
+/**
+ * @description  Delete Review
+ * @route        DELETE /api/v1/reviews/:id
+ * @access       Private
+ */
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+    const review = await Review.findById(req.params.id);
+
+    if(!review) {
+        return next(new ErrorResponse(`No review with id of ${req.params.id}`, 404));
+    }
+
+    // make sure review belongs to user or user is admin
+    if(
+        review.user.toString() !== req.user.id &&
+        user.role !== 'admin'
+    ) {
+        return next(new ErrorResponse(`Not Authorized to delete review`, 401));
+    }
+
+    await review.remove();
+
+    return res.status(200).json({
+        success: true,
+        data: {}
     });
 });
