@@ -94,7 +94,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse(`User ${req.user.id} is not authorized to update this bootcamp`, 401));
     }
 
-    bootcamp = await findByIdAndUpdate(req.params.id, req.body, {
+    bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
     });
